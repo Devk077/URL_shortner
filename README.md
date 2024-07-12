@@ -14,7 +14,7 @@ Welcome to the **URL Shortener & QR Code Generator** project! This Django-based 
 
 The interface is designed to be intuitive and easy to use, featuring a gradient background and a clean form layout:
 
-![Screenshot](screenshot.png)
+![Screenshot](https://github.com/Devk077/URL_shortner/blob/main/media/image.png)
 
 ## 🛠️ Installation
 
@@ -60,24 +60,26 @@ Follow these steps to set up the project on your local machine:
 
 ## 📂 Project Structure
 
+```
 urlshortener/
 ├── urlshortener/
-│ ├── settings.py
-│ ├── urls.py
-│ ├── wsgi.py
-│ └── ...
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── ...
 ├── shortener/
-│ ├── migrations/
-│ ├── static/
-│ ├── templates/
-│ ├── views.py
-│ ├── models.py
-│ ├── urls.py
-│ └── ...
+│   ├── migrations/
+│   ├── static/
+│   ├── templates/
+│   ├── views.py
+│   ├── models.py
+│   ├── urls.py
+│   └── ...
 ├── manage.py
 ├── requirements.txt
 └── README.md
-
+```
 
 ## 🧩 Models
 
