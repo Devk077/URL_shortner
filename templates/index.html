@@ -175,7 +175,7 @@
             $('h2').html("QR Code Generated!");
           } else {
             $('#qr_code_image').hide();
-            $('h2').html("localhost:8000/" + data);
+            $('h2').html("coded.pythonanywhere.com/" + data);
           }
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -193,6 +193,31 @@
         $('#name').show();
         grecaptcha.reset();
       }
+    });
+
+    // Copy URL to clipboard when h2 is clicked
+    $(document).on('click', 'h2', function () {
+      var urlText = $(this).text();
+      if (urlText.startsWith("localhost:8000/")) {
+        var tempInput = document.createElement("input");
+        tempInput.value = urlText;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("URL copied to clipboard!");
+      }
+    });
+
+    // Download QR code when image is clicked
+    $(document).on('click', '#qr_code_image', function () {
+      var imgSrc = $(this).attr('src');
+      var a = document.createElement('a');
+      a.href = imgSrc;
+      a.download = 'qr_code.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     });
   </script>
 </body>
