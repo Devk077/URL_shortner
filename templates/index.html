@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      font-family: "Lato", sans-serif;
+      background: linear-gradient(to right, #ed88ec 0%, #44187a 100%);
+      margin: 0;
+    }
+
+    main {
+      max-width: 720px;
+      width: 100%;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.634);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #330867;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    input {
+      width: calc(100% - 2rem);
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border: 2px solid #330867;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .g-recaptcha {
+      /* border: 2px solid #330867; */
+      box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.634);
+      border-radius: 5px;
+      margin-top: 1rem;
+      background-color: rgba(255, 255, 255, 0.634);
+    }
+
+    button {
+      padding: 1rem 2rem;
+      margin-top: 1rem;
+      border: 2px solid #330867;
+      border-radius: 10px;
+      background-color: #330867;
+      color: rgba(255, 255, 255, 0.634);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      background-color: rgba(255, 255, 255, 0.634);
+      color: #330867;
+    }
+
+    section {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f0f0f0;
+      border-radius: 5px;
+      min-height: 80px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #330867;
+      font-size: 1.25rem;
+    }
+
+    .radio-area {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    #qr_code_image {
+      margin-top: 1rem;
+      max-width: 100%;
+      height: auto;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>URL Shortener</h1>
+    <form action="#" method="POST" id="post-form">
+      {% csrf_token %}
+      <input type="text" name="link" id="link" placeholder="Enter URL here">
+      <input type="text" name="name" id="name" placeholder="Enter URL Name (Optional)">
+
+      <div class="container radio-area">
+        <label>
+          <input type="radio" name="group" id="create_url" checked>
+          Create URL
+        </label>
+        <label>
+          <input type="radio" name="group" id="create_qrcode">
+          Create QR Code
+        </label>
+      </div>
+
+      <div class="buttons">
+        <div class="g-recaptcha" data-sitekey="6Lcciw4qAAAAAMPQqdYcazQJq7sdqSwr4ZBIe7ep"></div>
+        <button type="submit" id="shorten">Shorten</button>
+      </div>
+    </form>
+    <section id="section">
+      <h2></h2>
+      <img id="qr_code_image" src="" alt="QR Code">
+    </section>
+  </main>
+
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script type="text/javascript">
+    $(document).on('submit', '#post-form', function (e) {
+      e.preventDefault();
+      var captchaResponse = grecaptcha.getResponse();
+      if (!captchaResponse) {
+        alert("Please complete the reCAPTCHA!");
+        return;
+      }
+
+      var url = '/create_url';  // Default URL endpoint
+
+      if ($('#create_qrcode').is(':checked')) {
+        url = '/create_qrcode';  // Change URL endpoint if QR Code radio button is selected
+        $('#name').hide(); 
+      } else if ($('#create_url').is(':checked')) {
+        $('#name').show();
+      }
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          link: $('#link').val(),
+          name: $('#name').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+          'g-recaptcha-response': captchaResponse // Include reCAPTCHA response
+        },
+        success: function (data) {
+          if ($('#create_qrcode').is(':checked')) {
+            $('#qr_code_image').attr('src', data.img_url).show();
+            $('h2').html("QR Code Generated!");
+          } else {
+            $('#qr_code_image').hide();
+            $('h2').html("localhost:8000/" + data);
+          }
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          console.error(xhr.responseText);
+          alert("Error: " + xhr.responseText); // Basic error handling
+        }
+      });
+    });
+
+    $(document).on('change', 'input[name="group"]', function () {
+      if ($('#create_qrcode').is(':checked')) {
+        $('#name').hide();
+        grecaptcha.reset();
+      } else {
+        $('#name').show();
+        grecaptcha.reset();
+      }
+    });
+  </script>
+</body>
+
+</html>
