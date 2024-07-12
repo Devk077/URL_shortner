@@ -94,6 +94,7 @@
       margin: 0;
       color: #330867;
       font-size: 1.25rem;
+      cursor: pointer;
     }
 
     .radio-area {
@@ -107,6 +108,13 @@
       max-width: 100%;
       height: auto;
       display: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .buttons {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -198,7 +206,7 @@
     // Copy URL to clipboard when h2 is clicked
     $(document).on('click', 'h2', function () {
       var urlText = $(this).text();
-      if (urlText.startsWith("localhost:8000/")) {
+      if (urlText.startsWith("coded.pythonanywhere.com/")) {
         var tempInput = document.createElement("input");
         tempInput.value = urlText;
         document.body.appendChild(tempInput);
