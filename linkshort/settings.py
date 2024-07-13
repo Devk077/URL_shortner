@@ -17,9 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 
-RECAPTCHA_PUBLIC_KEY = '6Lcciw4qAAAAAMPQqdYcazQJq7sdqSwr4ZBIe7ep'
-RECAPTCHA_PRIVATE_KEY = '6Lcciw4qAAAAAGdeWshCwbkcauD6_njpLQOuQA5x'
-SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']  # Optional, to silence system check warning if in development
+RECAPTCHA_PUBLIC_KEY = 'your_public_key'
+RECAPTCHA_PRIVATE_KEY = 'your_private_key'
 
 
 
